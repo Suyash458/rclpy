@@ -178,7 +178,6 @@ class Node:
                 validate_namespace(namespace)
                 # Should not get to this point
                 raise RuntimeError('rclpy_create_node failed for unknown reason')
-        self.__handle.requires(self._context.handle)
         with self.handle as capsule:
             self._logger = get_logger(_rclpy.rclpy_get_node_logger_name(capsule))
 
@@ -1141,7 +1140,6 @@ class Node:
             self._validate_topic_or_service_name(topic)
 
         publisher_handle = Handle(publisher_capsule)
-        publisher_handle.requires(self.handle)
 
         publisher = Publisher(
             publisher_handle, msg_type, topic, qos_profile,
@@ -1200,7 +1198,6 @@ class Node:
             self._validate_topic_or_service_name(topic)
 
         subscription_handle = Handle(subscription_capsule)
-        subscription_handle.requires(self.handle)
 
         subscription = Subscription(
             subscription_handle, msg_type,
@@ -1248,7 +1245,6 @@ class Node:
             self._validate_topic_or_service_name(srv_name, is_service=True)
 
         client_handle = Handle(client_capsule)
-        client_handle.requires(self.handle)
 
         client = Client(
             self.context,
@@ -1296,7 +1292,6 @@ class Node:
             self._validate_topic_or_service_name(srv_name, is_service=True)
 
         service_handle = Handle(service_capsule)
-        service_handle.requires(self.handle)
 
         service = Service(
             service_handle,
@@ -1331,7 +1326,6 @@ class Node:
         if clock is None:
             clock = self._clock
         timer = Timer(callback, callback_group, timer_period_nsec, clock, context=self.context)
-        timer.handle.requires(self.handle)
 
         self.__timers.append(timer)
         callback_group.add_entity(timer)
@@ -1347,7 +1341,6 @@ class Node:
         if callback_group is None:
             callback_group = self.default_callback_group
         guard = GuardCondition(callback, callback_group, context=self.context)
-        guard.handle.requires(self.handle)
 
         self.__guards.append(guard)
         callback_group.add_entity(guard)
